@@ -1,0 +1,102 @@
+clc
+close all
+t = -5: 0.01 : 5;
+x_t= sin(3*t);
+subplot(2,4,1)
+plot(t,x_t)
+xlabel('time');ylabel('sin(3t)');title('Q1) (i) x(t)=sin(3t)');grid on;
+t = 0: 0.01 : 5;
+y_t= exp(2*t + 3);
+subplot(2,4,5)
+plot(t,y_t)
+xlabel('time');ylabel('e^{(2t+3)}');title('Q1) (ii) y(t)=e^{(2t+3)}');grid on;
+t = 0 : 0.01 : 10;
+x_t= (exp(t+2)).*(2*t + 1);
+subplot(2,4,2)
+semilogy(t,x_t);
+xlabel('time');ylabel('logx(t)');title('Q2) x(t)=e^{t+2}(2t+1)');grid on;
+t=0:0.01:10;
+rp=exp(0.5*t).*cos(t+(pi/3));
+subplot(2,4,3)
+plot(t,rp)
+xlabel('time');ylabel('realpart');title('Q3) (i) realpart Vs time');grid on;
+cp=exp(0.5*t).*sin(t+(pi/3));
+subplot(2,4,7)
+plot(t,cp)
+xlabel('time');ylabel('complexpart');title('Q3) (ii) complexpart Vs time');grid on;
+phase= angle( exp(0.5*t).*cos(t+(pi/3)) + 1i*exp(0.5*t).*sin(t+(pi/3)) );
+subplot(2,4,4)
+plot(t,phase)
+xlabel('time');ylabel('Phase');title('Q4) (i) Phase Vs time');grid on;
+mag=exp((0.5)*t);
+subplot(2,4,8)
+plot(t,mag)
+xlabel('time');ylabel('magnitude');title('Q4) (ii) magnitude Vs time');grid on;
+
+
+
+
+
+
+clc;
+close all;
+A1=2;A2=-3;A3=4;f1=10;f2=20;f3=30;fs=100;
+t=0 : 1/fs : 1;
+x=( A1*cos(2*pi*f1*t) + A2*sin(4*pi*f2*t) + A3*sin(pi*f3*t) );
+x_mag=abs(x);
+subplot(2,3,1);
+plot(t,x_mag);
+xlabel('Time');ylabel('Magnitude');title('One sided magnitude response');
+x_phase=angle(x);
+subplot(2,3,2);
+plot(t,x_phase);
+xlabel('Time');ylabel('Phase');title('One sided phase response');
+x_ft=fft(x);
+n=length(x);
+f= 0 : fs/n : fs-(fs/n);
+x_ft_mag=abs(x_ft);
+x_ft_phase=angle(x_ft);
+subplot(2,3,3);
+plot(f,x_ft_mag);
+xlabel('Frequency');ylabel('Magnitude');title('One sided magnitude response');
+subplot(2,3,4);
+plot(f,x_ft_phase);
+xlabel('Frequency');ylabel('Phase');title('one sided phase response');
+f= -fs/2 : fs/n : (fs/2)-(fs/n);
+subplot(2,3,5);
+plot(f,x_ft_mag);
+xlabel('Frequency');ylabel('Magnitude');title('Two sided magnitude response');
+subplot(2,3,6);
+plot(f,x_ft_phase);
+xlabel('Frequency');ylabel('Phase');title('Two sided phase response');
+
+
+
+
+
+
+clc
+close all;
+syms tx;
+t=0: 0.01: 15;
+sqr_wave = 0.5 + (0.5)*(square(pi*t)) ;
+ftp=2;
+n=1:100; 
+a0 = (1/ftp)*int(1,tx,0,1);
+an = (2/ftp)*int(cos(n*pi*tx),tx,0,1);
+bn = (2/ftp)*int(sin(n*pi*tx),tx,0,1);
+m=1;
+for x=[1 10 20 50]
+    FS=a0;
+    for j=1:x
+        FS=FS + (an(j))*cos(n(j)*pi*t) + (bn(j))*sin(n(j)*pi*t);
+    end
+    subplot(4,2,m);
+    m=m+1;
+    plot(t,FS,t,sqr_wave);
+    xlabel('Time');ylabel('Magnitude');legend('Fourier series','Square wave');
+    subplot(4,2,m);
+    m=m+1;
+    plot(t,FS-sqr_wave);
+    xlabel('Time');ylabel('Difference');legend('Gibbs phenomenon');
+end
